@@ -27,7 +27,7 @@ export default function Category({ allCourses, setAllCourses }) {
       w="80%"
     >
       {categoryCourses?.map((i) => (
-        <NavLink to={i.englishLink}>
+        <NavLink to={`/categories/${i.category}/${i._id}`}>
           <Flex
             alignItems="center"
             borderRadius="6px"
