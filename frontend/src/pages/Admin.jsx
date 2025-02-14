@@ -45,7 +45,8 @@ export default function Admin({
   allCourses,
   getCourses,
   singleCourse,
-  getCourse
+  getCourse,
+  allCategories
 }) {
   const toast = useToast();
 
@@ -82,7 +83,7 @@ export default function Admin({
   });
 
   const clearCourseForm = () => {
-    setShowSpanishCourse(!showSpanishCourse);
+    setShowSpanishCourse(false);
     setNewCourse({
       englishTitle: "",
       spanishTitle: "",
@@ -161,6 +162,9 @@ export default function Admin({
           status: "success"
         });
         getCourses();
+        if (!editCourse.spanishTitle) {
+          setShowSpanishCourseEdit(null);
+        }
       }
     } catch (error) {}
   };
@@ -208,21 +212,6 @@ export default function Admin({
     categoryImage: ""
   });
 
-  const [allCategories, setAllCategories] = useState([]);
-
-  const getCategories = async () => {
-    try {
-      const res = await fetch("/api/categories");
-      const categoriesData = await res.json();
-
-      if (res.ok) {
-        setAllCategories(categoriesData);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const options = {
     apiKey: "public_223k24FBYTp3msVUE8shtNXQk57H", // This is your API key.
     maxFileCount: 1,
@@ -234,10 +223,6 @@ export default function Admin({
       }
     }
   };
-
-  useEffect(() => {
-    getCategories();
-  }, []);
 
   useEffect(() => {
     if (filterContentType === "All") {
@@ -355,62 +340,48 @@ export default function Admin({
                         flexDirection="column"
                         pr="3"
                       >
-                        <Text lineHeight="1.2">
-                          <b>{i.englishTitle}</b>
+                        <Text fontWeight="semibold" lineHeight="tight">
+                          {i.englishTitle}
                         </Text>
-                        <Text lineHeight="1.2">
-                          <small>{i.category}</small>
+                        <Text lineHeight="tight">
+                          <Box fontSize="sm">{i.category}</Box>
                         </Text>
                       </Flex>
                     </Flex>
                     <ButtonGroup>
-                      <Tooltip
-                        hasArrow
-                        arrowSize={8}
-                        borderRadius="6px"
-                        label="Edit Course"
-                        p="2"
-                        pl="4"
-                        pr="4"
-                        placement="top"
+                      <Button
+                        onClick={() => {
+                          getCourse(i._id);
+                          setOpenEditModal(i._id);
+                          onEditOpen();
+
+                          if (i.spanishTitle) {
+                            setShowSpanishCourseEdit(i._id);
+                          } else {
+                            setShowSpanishCourseEdit(null);
+                          }
+
+                          setEditCourse({
+                            englishTitle: i.englishTitle,
+                            spanishTitle: i.spanishTitle,
+                            englishLink: i.englishLink,
+                            spanishLink: i.spanishLink,
+                            category: i.category,
+                            contentType: i.contentType,
+                            active: true,
+                            id: i._id
+                          });
+                        }}
+                        size="sm"
                       >
-                        <IconButton
-                          aria-label="Search database"
-                          icon={<RiEditFill />}
-                          onClick={() => {
-                            getCourse(i._id);
-                            setOpenEditModal(i._id);
-                            onEditOpen();
-
-                            if (i.spanishTitle) {
-                              setShowSpanishCourseEdit(i._id);
-                            } else {
-                              setShowSpanishCourseEdit(null);
-                            }
-
-                            setEditCourse({
-                              englishTitle: i.englishTitle,
-                              spanishTitle: i.spanishTitle,
-                              englishLink: i.englishLink,
-                              spanishLink: i.spanishLink,
-                              category: i.category,
-                              contentType: i.contentType,
-                              active: true,
-                              id: i._id
-                            });
-                          }}
-                          size="sm"
-                        />
-                      </Tooltip>
+                        Edit
+                      </Button>
 
                       <Popover>
                         <PopoverTrigger>
-                          <IconButton
-                            aria-label="Search database"
-                            colorScheme="red"
-                            icon={<RiDeleteBin6Fill />}
-                            size="sm"
-                          />
+                          <Button colorScheme="red" size="sm">
+                            Delete
+                          </Button>
                         </PopoverTrigger>
                         <PopoverContent>
                           <PopoverArrow />
@@ -434,7 +405,6 @@ export default function Admin({
                                 //   pt="5"
                                 size="md"
                               >
-                                <RiDeleteBin6Fill />
                                 Permanently Delete
                               </Button>
                             </Flex>
@@ -521,7 +491,7 @@ export default function Admin({
                                 </InputGroup>
                               </Box>
 
-                              {showSpanishCourseEdit === i._id && (
+                              {showSpanishCourseEdit === i._id ? (
                                 <>
                                   <Box>
                                     <Input
@@ -585,19 +555,16 @@ export default function Admin({
                                     </InputGroup>
                                   </Box>
                                 </>
+                              ) : (
+                                <Button
+                                  gap="1"
+                                  onClick={() => {
+                                    setShowSpanishCourseEdit(i._id);
+                                  }}
+                                >
+                                  <MdLanguage fontSize="16" /> Add Spanish
+                                </Button>
                               )}
-
-                              {showSpanishCourseEdit !== i._id &&
-                                !i.spanishTitle && (
-                                  <Button
-                                    gap="1"
-                                    onClick={() => {
-                                      setShowSpanishCourseEdit(i._id);
-                                    }}
-                                  >
-                                    <MdLanguage fontSize="16" /> Add Spanish
-                                  </Button>
-                                )}
 
                               <Box>
                                 <Select
