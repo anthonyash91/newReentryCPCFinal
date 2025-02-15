@@ -12,12 +12,19 @@ export default function Course({ singleCourse, getCourse }) {
 
   return (
     <Container display="flex" justifyContent="center">
-      <EmbedPDF
-        companyIdentifier="react-viewer"
-        mode="inline"
-        style={{ width: 1100, height: 800 }}
-        documentURL={singleCourse?.data?.englishLink}
-      />
+      <div>
+        <div
+          style={{
+            paddingTop: "56.25%",
+            position: "relative",
+            backgroundColor: "yellow",
+            width: "100%",
+            height: "100%"
+          }}
+        >
+          <iframe src={singleCourse?.data?.englishLink}></iframe>
+        </div>
+      </div>
     </Container>
   );
 }

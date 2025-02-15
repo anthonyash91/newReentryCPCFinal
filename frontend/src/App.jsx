@@ -75,7 +75,11 @@ export default function App() {
         <Route
           path="/categories/:category"
           element={
-            <Category allCourses={allCourses} setAllCourses={setAllCourses} />
+            <Category
+              allCourses={allCourses}
+              setAllCourses={setAllCourses}
+              setSingleCourse={setSingleCourse}
+            />
           }
         />
         <Route

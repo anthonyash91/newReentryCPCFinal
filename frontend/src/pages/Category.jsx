@@ -6,7 +6,11 @@ import { HiExternalLink } from "react-icons/hi";
 import { MdVideoFile } from "react-icons/md";
 import { BiSolidFilePdf } from "react-icons/bi";
 
-export default function Category({ allCourses, setAllCourses }) {
+export default function Category({
+  allCourses,
+  setAllCourses,
+  setSingleCourse
+}) {
   const params = useParams();
 
   const categoryCourses = allCourses?.data?.filter(
@@ -14,6 +18,7 @@ export default function Category({ allCourses, setAllCourses }) {
   );
 
   useEffect(() => {
+    setSingleCourse({});
     window.scrollTo(0, 0);
   }, []);
 
