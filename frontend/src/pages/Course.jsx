@@ -43,6 +43,7 @@ export default function Course({ singleCourse, getCourse }) {
               padding: "0",
               margin: "0"
             }}
+            allowFullScreen
             src={`${singleCourse?.data?.englishLink}?embed`}
           ></iframe>
         </div>

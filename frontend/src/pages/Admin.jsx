@@ -10,6 +10,7 @@ import {
   IconButton,
   ButtonGroup,
   Tooltip,
+  Badge,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -322,7 +323,22 @@ export default function Admin({
                     pr="5"
                     pt="4"
                     key={i._id}
+                    position="relative"
                   >
+                    {i.englishLink.includes("watch") ? (
+                      ""
+                    ) : (
+                      <Badge
+                        borderRadius="3px"
+                        variant="solid"
+                        position="absolute"
+                        colorScheme="red"
+                        top="-3"
+                        left="-6"
+                      >
+                        Update
+                      </Badge>
+                    )}
                     <Flex alignItems="center" gap="3">
                       <Flex justifyContent="center" w="9">
                         {i.contentType === "PDF" ? (
@@ -681,94 +697,388 @@ export default function Admin({
               .reverse()
           : filterCourses
               ?.map((i) => (
-                <Flex
-                  alignItems="center"
-                  borderRadius="6px"
-                  borderWidth="1px"
-                  justifyContent="space-between"
-                  pb="4"
-                  pl="4"
-                  pr="5"
-                  pt="4"
-                  key={i._id}
-                >
-                  <Flex alignItems="center" gap="2">
-                    <Flex justifyContent="center" w="9">
-                      {i.contentType === "PDF" ? (
-                        <BiSolidFilePdf size="40" />
-                      ) : i.contentType === "Video" ? (
-                        <MdVideoFile size="40" />
-                      ) : i.contentType === "Link" ? (
-                        <HiExternalLink size="35" />
-                      ) : (
-                        ""
-                      )}
+                <>
+                  <Flex
+                    alignItems="center"
+                    borderRadius="6px"
+                    borderWidth="1px"
+                    justifyContent="space-between"
+                    pb="4"
+                    pl="4"
+                    pr="5"
+                    pt="4"
+                    position="relative"
+                    key={i._id}
+                  >
+                    {i.englishLink.includes("watch") ? (
+                      ""
+                    ) : (
+                      <Badge
+                        borderRadius="3px"
+                        variant="solid"
+                        position="absolute"
+                        colorScheme="red"
+                        top="-3"
+                        left="-6"
+                      >
+                        Update
+                      </Badge>
+                    )}
+
+                    <Flex alignItems="center" gap="3">
+                      <Flex justifyContent="center" w="9">
+                        {i.contentType === "PDF" ? (
+                          <BiSolidFilePdf size="40" />
+                        ) : i.contentType === "Video" ? (
+                          <MdVideoFile size="40" />
+                        ) : i.contentType === "Link" ? (
+                          <HiExternalLink size="35" />
+                        ) : (
+                          ""
+                        )}
+                      </Flex>
+                      <Flex
+                        justifyContent="center"
+                        flexDirection="column"
+                        pr="3"
+                      >
+                        <Text fontWeight="semibold" lineHeight="tight">
+                          {i.englishTitle}
+                        </Text>
+                        <Text lineHeight="tight">
+                          <Box fontSize="sm">{i.category}</Box>
+                        </Text>
+                      </Flex>
                     </Flex>
-                    <Flex justifyContent="center" flexDirection="column" pr="3">
-                      <Text lineHeight="1.2">
-                        <b>{i.englishTitle}</b>
-                      </Text>
-                      <Text lineHeight="1.2">
-                        <small>{i.category}</small>
-                      </Text>
-                    </Flex>
-                  </Flex>
-                  <ButtonGroup>
-                    <Tooltip
-                      hasArrow
-                      arrowSize={8}
-                      borderRadius="6px"
-                      label="Edit Course"
-                      p="2"
-                      pl="4"
-                      pr="4"
-                      placement="top"
-                    >
-                      <IconButton
-                        icon={<RiEditFill />}
+                    <ButtonGroup>
+                      <Button
                         onClick={() => {
+                          getCourse(i._id);
                           setOpenEditModal(i._id);
+                          onEditOpen();
+
+                          if (i.spanishTitle) {
+                            setShowSpanishCourseEdit(i._id);
+                          } else {
+                            setShowSpanishCourseEdit(null);
+                          }
+
+                          setEditCourse({
+                            englishTitle: i.englishTitle,
+                            spanishTitle: i.spanishTitle,
+                            englishLink: i.englishLink,
+                            spanishLink: i.spanishLink,
+                            category: i.category,
+                            contentType: i.contentType,
+                            active: true,
+                            id: i._id
+                          });
                         }}
                         size="sm"
-                      />
-                    </Tooltip>
+                      >
+                        Edit
+                      </Button>
 
-                    <Popover>
-                      <PopoverTrigger>
-                        <IconButton
-                          colorScheme="red"
-                          icon={<RiDeleteBin6Fill />}
-                          size="sm"
-                        />
-                      </PopoverTrigger>
-                      <PopoverContent>
-                        <PopoverArrow />
-                        <PopoverBody pt="5" pb="6" pl="6" pr="6">
-                          <Box fontSize="sm" textAlign="center">
-                            Are you sure you want to delete "
-                            <b>{i.englishTitle}</b>
-                            "?
-                          </Box>
-                          <Divider mb="2" mt="3" />
-                          <Flex justifyContent="center">
-                            <Button
-                              //   flex="1"
-                              colorScheme="red"
-                              gap="1"
-                              mt="3"
-                              //   pb="5"
-                              //   pt="5"
-                              size="sm"
-                            >
-                              <RiDeleteBin6Fill />
-                              Permanently Delete
-                            </Button>
-                          </Flex>
-                        </PopoverBody>
-                      </PopoverContent>
-                    </Popover>
-                  </ButtonGroup>
-                </Flex>
+                      <Popover>
+                        <PopoverTrigger>
+                          <Button colorScheme="red" size="sm">
+                            Delete
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                          <PopoverArrow />
+                          <PopoverBody pt="5" pb="6" pl="6" pr="6">
+                            <Box fontSize="md" textAlign="center">
+                              Are you sure you want to delete "
+                              <b>{i.englishTitle}</b>
+                              "?
+                            </Box>
+                            <Divider mb="2" mt="3" />
+                            <Flex justifyContent="center">
+                              <Button
+                                //   flex="1"
+                                colorScheme="red"
+                                gap="2"
+                                mt="3"
+                                onClick={() => {
+                                  deleteCourse(i._id, i.englishTitle);
+                                }}
+                                //   pb="5"f
+                                //   pt="5"
+                                size="md"
+                              >
+                                Permanently Delete
+                              </Button>
+                            </Flex>
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Popover>
+                    </ButtonGroup>
+                  </Flex>
+
+                  {openEditModal === i._id && (
+                    <Modal
+                      isCentered
+                      isOpen={isEditOpen}
+                      onClose={onEditClose}
+                      size="xl"
+                    >
+                      <ModalOverlay />
+                      <ModalContent pb="8" pl="4" pr="4" pt="4">
+                        <ModalHeader>Edit This Course</ModalHeader>
+                        <ModalCloseButton mt="1" />
+                        <ModalBody>
+                          <form onSubmit={updateCourse}>
+                            <Flex flexDirection="column" gap="5">
+                              <Box>
+                                <Input
+                                  name="englishTitle"
+                                  placeholder="English Content Title"
+                                  onChange={(e) => {
+                                    setEditCourse({
+                                      ...editCourse,
+                                      englishTitle: e.target.value
+                                    });
+                                  }}
+                                  value={editCourse.englishTitle}
+                                  type="text"
+                                />
+                              </Box>
+
+                              <Box>
+                                <InputGroup gap="3">
+                                  <Input
+                                    name="englishLink"
+                                    placeholder="English Content Link"
+                                    onChange={(e) => {
+                                      setEditCourse({
+                                        ...editCourse,
+                                        englishLink: e.target.value
+                                      });
+                                    }}
+                                    value={editCourse.englishLink}
+                                    type="text"
+                                  />
+
+                                  <UploadButton
+                                    options={options}
+                                    onComplete={(files) =>
+                                      setEditCourse({
+                                        ...editCourse,
+                                        englishLink: files
+                                          .map((x) => x.fileUrl)
+                                          .join("\n")
+                                      })
+                                    }
+                                  >
+                                    {({ onClick }) => (
+                                      <Tooltip
+                                        hasArrow
+                                        arrowSize={8}
+                                        borderRadius="6px"
+                                        label="Upload File"
+                                        p="2"
+                                        pl="4"
+                                        pr="4"
+                                      >
+                                        <IconButton
+                                          aria-label="Upload File"
+                                          fontSize="18"
+                                          icon={<RiUploadCloud2Fill />}
+                                          onClick={onClick}
+                                        />
+                                      </Tooltip>
+                                    )}
+                                  </UploadButton>
+                                </InputGroup>
+                              </Box>
+
+                              {showSpanishCourseEdit === i._id ? (
+                                <>
+                                  <Box>
+                                    <Input
+                                      name="spanishTitle"
+                                      placeholder="Spanish Content Title"
+                                      onChange={(e) => {
+                                        setEditCourse({
+                                          ...editCourse,
+                                          spanishTitle: e.target.value
+                                        });
+                                      }}
+                                      value={editCourse.spanishTitle}
+                                      type="text"
+                                    />
+                                  </Box>
+
+                                  <Box>
+                                    <InputGroup gap="3">
+                                      <Input
+                                        name="spanishLink"
+                                        placeholder="Spanish Content Link"
+                                        onChange={(e) => {
+                                          setEditCourse({
+                                            ...editCourse,
+                                            spanishLink: e.target.value
+                                          });
+                                        }}
+                                        value={editCourse.spanishLink}
+                                        type="text"
+                                      />
+                                      <UploadButton
+                                        options={options}
+                                        onComplete={(files) =>
+                                          setEditCourse({
+                                            ...editCourse,
+                                            spanishLink: files
+                                              .map((x) => x.fileUrl)
+                                              .join("\n")
+                                          })
+                                        }
+                                      >
+                                        {({ onClick }) => (
+                                          <Tooltip
+                                            hasArrow
+                                            arrowSize={8}
+                                            borderRadius="6px"
+                                            label="Upload File"
+                                            p="2"
+                                            pl="4"
+                                            pr="4"
+                                          >
+                                            <IconButton
+                                              aria-label="Upload File"
+                                              fontSize="18"
+                                              icon={<RiUploadCloud2Fill />}
+                                              onClick={onClick}
+                                            />
+                                          </Tooltip>
+                                        )}
+                                      </UploadButton>
+                                    </InputGroup>
+                                  </Box>
+                                </>
+                              ) : (
+                                <Button
+                                  gap="1"
+                                  onClick={() => {
+                                    setShowSpanishCourseEdit(i._id);
+                                  }}
+                                >
+                                  <MdLanguage fontSize="16" /> Add Spanish
+                                </Button>
+                              )}
+
+                              <Box>
+                                <Select
+                                  color={editCourse.category ? "" : "#748094"}
+                                  icon={<HiChevronDown />}
+                                  name="category"
+                                  onChange={(e) => {
+                                    setEditCourse({
+                                      ...editCourse,
+                                      category: e.target.value
+                                    });
+                                  }}
+                                  value={editCourse.category}
+                                >
+                                  <option hidden>
+                                    Choose Content Category
+                                  </option>
+                                  {allCategories?.data?.map((i) => (
+                                    <option key={i._id}>
+                                      {i.englishTitle}
+                                    </option>
+                                  ))}
+                                </Select>
+                              </Box>
+
+                              <Box>
+                                <Select
+                                  color={
+                                    editCourse.contentType ? "" : "#748094"
+                                  }
+                                  icon={<HiChevronDown />}
+                                  name="contentType"
+                                  onChange={(e) => {
+                                    setEditCourse({
+                                      ...editCourse,
+                                      contentType: e.target.value
+                                    });
+                                  }}
+                                  value={editCourse.contentType}
+                                >
+                                  <option hidden>Choose Content Type</option>
+                                  <option>PDF</option>
+                                  <option>Video</option>
+                                  <option>Link</option>
+                                </Select>
+                              </Box>
+
+                              <ButtonGroup gap="2" justifyContent="stretch">
+                                <Button
+                                  colorScheme={
+                                    editCourse.active ? "green" : "gray"
+                                  }
+                                  flex="1"
+                                  gap="1"
+                                  onClick={() =>
+                                    setEditCourse({
+                                      ...editCourse,
+                                      active: true
+                                    })
+                                  }
+                                  variant="outline"
+                                >
+                                  <GrFormView fontSize="20" /> Active
+                                </Button>
+                                <Button
+                                  colorScheme={
+                                    !editCourse.active ? "red" : "gray"
+                                  }
+                                  flex="1"
+                                  gap="1"
+                                  onClick={() =>
+                                    setEditCourse({
+                                      ...editCourse,
+                                      active: false
+                                    })
+                                  }
+                                  variant="outline"
+                                >
+                                  <GrHide fontSize="20" /> Inactive
+                                </Button>
+                              </ButtonGroup>
+
+                              <Button
+                                colorScheme="blue"
+                                opacity={
+                                  editCourse.englishTitle &&
+                                  editCourse.englishLink &&
+                                  editCourse.category &&
+                                  editCourse.contentType
+                                    ? "1"
+                                    : ".5"
+                                }
+                                overflow="hidden"
+                                pointerEvents={
+                                  editCourse.englishTitle &&
+                                  editCourse.englishLink &&
+                                  editCourse.category &&
+                                  editCourse.contentType
+                                    ? ""
+                                    : "none"
+                                }
+                                type="submit"
+                              >
+                                Update Course
+                              </Button>
+                            </Flex>
+                          </form>
+                        </ModalBody>
+                      </ModalContent>
+                    </Modal>
+                  )}
+                </>
               ))
               .reverse()}
       </Flex>
