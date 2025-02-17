@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { NavLink } from "react-router-dom";
+
 import {
   Container,
   Flex,
@@ -427,6 +429,14 @@ export default function Admin({
                           </PopoverBody>
                         </PopoverContent>
                       </Popover>
+                      <NavLink
+                        to={`/categories/${i.category}/${i._id}`}
+                        target="_blank"
+                      >
+                        <Button size="sm" colorScheme="blue">
+                          View
+                        </Button>
+                      </NavLink>
                     </ButtonGroup>
                   </Flex>
 
@@ -813,6 +823,15 @@ export default function Admin({
                           </PopoverBody>
                         </PopoverContent>
                       </Popover>
+
+                      <NavLink
+                        to={`/categories/${i.category}/${i._id}`}
+                        target="_blank"
+                      >
+                        <Button size="sm" colorScheme="blue">
+                          View
+                        </Button>
+                      </NavLink>
                     </ButtonGroup>
                   </Flex>
 
