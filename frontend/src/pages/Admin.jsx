@@ -327,9 +327,8 @@ export default function Admin({
                     key={i._id}
                     position="relative"
                   >
-                    {i.englishLink.includes("watch") ? (
-                      ""
-                    ) : (
+                    {!i.englishLink.includes("watch") &&
+                    i.contentType === "Video" ? (
                       <Badge
                         borderRadius="3px"
                         variant="solid"
@@ -338,8 +337,10 @@ export default function Admin({
                         top="-3"
                         left="-6"
                       >
-                        Update
+                        Update Link
                       </Badge>
+                    ) : (
+                      ""
                     )}
                     <Flex alignItems="center" gap="3">
                       <Flex justifyContent="center" w="9">
@@ -720,9 +721,8 @@ export default function Admin({
                     position="relative"
                     key={i._id}
                   >
-                    {i.englishLink.includes("watch") ? (
-                      ""
-                    ) : (
+                    {!i.englishLink.includes("watch") &&
+                    i.contentType === "Video" ? (
                       <Badge
                         borderRadius="3px"
                         variant="solid"
@@ -731,8 +731,10 @@ export default function Admin({
                         top="-3"
                         left="-6"
                       >
-                        Update
+                        Update Link
                       </Badge>
+                    ) : (
+                      ""
                     )}
 
                     <Flex alignItems="center" gap="3">
